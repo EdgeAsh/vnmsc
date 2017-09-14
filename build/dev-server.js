@@ -21,6 +21,8 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser
 var proxyTable = config.dev.proxyTable
 
 var app = express()
+
+/*
 // mock
 // -----------------me-s
 var router = express.Router();
@@ -30,6 +32,7 @@ router.get('/goods',function(req,res,next){
 });
 app.use(router);
 // -----------------me-e
+*/
 
 var compiler = webpack(webpackConfig)
 
