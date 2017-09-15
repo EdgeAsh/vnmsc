@@ -71,5 +71,53 @@ router.get('/',(req,res,next)=>{
 	})
 })
 
+// 加入购物车
+router.post('/addCart',(req,res,next)=>{
+	var userId = "100000077",productId=req.body.productId;//post方式取参方式
+	var User = require('../models/users.js');
+
+	// 获取用户
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:"1",
+				msg:err.message
+			})
+		}else{
+			console.log('userDoc:'+ userDoc);
+			if(userDoc){
+				Goods.findOne({productId:productId},(err1,doc1)=>{
+					if(err1){
+						res.json({
+							status:"1",
+							msg:err1.message
+						})
+					}else{
+						if(doc1){
+							doc1.productNum = 1,
+							doc1.checked = 1,
+							userDoc.cartList.push(doc1);
+							userDoc.save((err2,doc2)=>{
+								if(err2){
+									res.json({
+										status:'1',
+										msg:err2.message
+									})
+								}else{
+									res.json({
+										status:'0',
+										msg:'',
+										result:'success! edge'
+									})
+								}
+							})
+						}
+					}
+				})
+			}
+		}
+	})
+})
+
 
 module.exports = router;
