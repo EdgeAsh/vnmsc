@@ -1,7 +1,7 @@
 // 获取mongoose框架
 var mongoose = require('mongoose');
 // 建立模板
-var userSchema = new mongoose.schema({
+var userSchema = new mongoose.Schema({
 	'userId':String,
 	'userName':String,
 	'userPwd':String,
