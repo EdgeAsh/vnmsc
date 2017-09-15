@@ -28,7 +28,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        // 代理
+        // 使用代理
         '/goods':{
             target:'http://localhost:3000'
         }

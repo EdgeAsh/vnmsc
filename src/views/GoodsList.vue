@@ -7,7 +7,7 @@
 	    <div class="filter-nav">
 	      <span class="sortby">Sort by:</span>
 	      <a href="javascript:void(0)" class="default cur">Default</a>
-	      <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+	      <a href="javascript:void(0)" class="price" @click='sortGoods()'>Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
 	      <a href="javascript:void(0)" class="filterby stopPop" @click='showFilter'>Filter by</a>
 	    </div>
 	    <div class="accessory-result">
@@ -39,6 +39,9 @@
 	              </div>
 	            </li>
 	          </ul>
+            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="20">
+              loading ...
+            </div>
 	        </div>
 	      </div>
 	    </div>
@@ -85,18 +88,49 @@ export default{
 					startPrice:500.00,
 					endPrice:1000.00
 				},
+				{
+					startPrice:1000.00,
+					endPrice:5000.00
+				},
 			],
 			checkedPrice:'all',
 			filterShow:false,
-			overLayShow:false
+			overLayShow:false,
+			sortFlag:true,
+			page:1,
+			pageSize:8,
+      busy:false
 		};
 	},
 	methods:{
-		getGoodsList(){
-			axios.get('/goods').then((res)=>{
+		getGoodsList(flag){
+			let param = {
+				page:this.page,
+				pageSize:this.pageSize,
+				sort:this.sortFlag?1:-1,
+				priceLevel:this.checkedPrice
+			}
+			axios.get('/goods',{params:param}).then((res)=>{
 				res = res.data;
-				this.goodsList = res.result.list;
-			})
+				if(res.status=='0'){
+          if(flag){
+            //分页
+            this.goodsList = this.goodsList.concat(res.result.list);
+            // 是否可以加载
+            console.log(res.result.list.length);
+            if(res.result.count == 0 || res.result.list.length < this.pageSize){
+              this.busy = true;
+            }else{
+              this.busy = false;
+            }
+          }else{
+            this.goodsList = res.result.list;
+          }
+        }else{
+				  this.goodsList = []
+        }
+
+			}).catch((err)=>{console.log(err)})
 		},
 		showFilter(){
 			this.filterShow=true,
@@ -108,8 +142,22 @@ export default{
 		},
 		setPrice(index){
 			this.checkedPrice=index;
+			this.page = 1;
+			this.getGoodsList();
 			this.hideFilter();
-		}
+		},
+		sortGoods(){
+			this.sortFlag = !this.sortFlag;
+			this.page = 1;
+			this.getGoodsList();
+		},
+    loadMore(){
+      this.busy = true;
+      setTimeout(() => {
+        this.page++;
+        this.getGoodsList(true);
+      }, 1000);
+    }
 	},
 	components:{
 		NavHeader,
@@ -119,7 +167,7 @@ export default{
 	computed:{
 
 	},
-	mounted:function(){
+	mounted(){
 		this.getGoodsList();
 	}
 }
