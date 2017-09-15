@@ -39,8 +39,8 @@
 	              </div>
 	            </li>
 	          </ul>
-            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="20">
-              loading ...
+            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="20" class="view-more-normal">
+              <img src="/static/loading-svg/loading-spinning-bubbles.svg">
             </div>
 	        </div>
 	      </div>
