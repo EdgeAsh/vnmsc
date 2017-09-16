@@ -86,34 +86,60 @@ router.post('/addCart',(req,res,next)=>{
 		}else{
 			console.log('userDoc:'+ userDoc);
 			if(userDoc){
-				Goods.findOne({productId:productId},(err1,doc1)=>{
-					if(err1){
-						res.json({
-							status:"1",
-							msg:err1.message
-						})
-					}else{
-						if(doc1){
-							doc1.productNum = 1,
-							doc1.checked = 1,
-							userDoc.cartList.push(doc1);
-							userDoc.save((err2,doc2)=>{
-								if(err2){
-									res.json({
-										status:'1',
-										msg:err2.message
-									})
-								}else{
-									res.json({
-										status:'0',
-										msg:'',
-										result:'success! edge'
-									})
-								}
-							})
-						}
+				let goodItem = ''
+				userDoc.cartList.forEach((item)=>{
+					if(item.productId == productId){
+						goodItem = item;
+						item.productNum++;
 					}
 				})
+
+				if(goodItem){
+					userDoc.save((err2,doc2)=>{
+						if(err2){
+							res.json({
+								status:'1',
+								msg:err2.message
+							})
+						}else{
+							res.json({
+								status:'0',
+								msg:'',
+								result:'success! edge'
+							})
+						}
+					})
+				}else{
+					Goods.findOne({productId:productId},(err1,doc1)=>{
+						if(err1){
+							res.json({
+								status:"1",
+								msg:err1.message
+							})
+						}else{
+							if(doc1){
+								doc1.productNum = 1,
+								doc1.checked = 1,
+								userDoc.cartList.push(doc1);
+								userDoc.save((err2,doc2)=>{
+									if(err2){
+										res.json({
+											status:'1',
+											msg:err2.message
+										})
+									}else{
+										res.json({
+											status:'0',
+											msg:'',
+											result:'success! edge'
+										})
+									}
+								})
+							}
+						}
+					})
+				}
+					
 			}
 		}
 	})

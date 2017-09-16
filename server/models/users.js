@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
 			'productImage':String,
 			'productId':String,
 			'productName':String,
-			'productNum':String,
+			'productNum':{type:String,default:'1'},
 			'salePrice':String,
 			'checked':String
 		}
