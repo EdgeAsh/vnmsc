@@ -38,5 +38,16 @@ router.post('/login',(req,res,next)=>{
 	})
 })
 
-
+// 登出接口
+router.post('/logout',(req,res,next)=>{
+	res.cookie('userId','',{
+		path:'/',
+		maxAge:-1
+	});
+	res.json({
+		status:'0',
+		msg:'登出成功',
+		result:''
+	})
+})
 module.exports = router;
