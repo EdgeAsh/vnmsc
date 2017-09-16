@@ -26,6 +26,10 @@ router.post('/login',(req,res,next)=>{
 				maxAge: 1000*60*60
 			});
 			// res.session.user = doc;
+			res.cookie('userName',doc.userName,{
+				path:'/',
+				maxAge: 1000*60*60
+			});
 
 			res.json({
 				status:'0',
@@ -49,5 +53,22 @@ router.post('/logout',(req,res,next)=>{
 		msg:'登出成功',
 		result:''
 	})
+})
+
+// 登录检验
+router.get('/chekLogin',(req,res,next)=>{
+	if(req.cookies.userId){
+		res.json({
+			status:'0',
+			msg:'',
+			result:req.cookies.userName || ''
+		});
+	}else{
+		res.json({
+			status:'1',
+			msg:'未登录',
+			result:''
+		});
+	}
 })
 module.exports = router;

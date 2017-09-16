@@ -110,7 +110,7 @@ export default{
 				sort:this.sortFlag?1:-1,
 				priceLevel:this.checkedPrice
 			}
-			axios.get('/goods',{params:param}).then((res)=>{
+			axios.get('/goods/list',{params:param}).then((res)=>{
 				res = res.data;
 				if(res.status=='0'){
           if(flag){
@@ -161,8 +161,9 @@ export default{
     addCart(productId){
     	axios.post('/goods/addCart',{
     		productId:productId
-    	}).then((res)=>{
-    		console.log(res)
+    	}).then((response)=>{
+    		let res = response.data;
+    		console.log(response)
     		if(res.status==0){
     			alert('加入成功');
     		}else{

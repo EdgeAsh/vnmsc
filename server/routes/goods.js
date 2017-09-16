@@ -19,7 +19,7 @@ mongoose.connection.on('disconnected',()=>{
 	console.log('MongoDB connected disconnected!')
 })
 
-router.get('/',(req,res,next)=>{
+router.get('/list',(req,res,next)=>{
 	// 实现排序，分页
 	let sort = req.param('sort');
 	let page = req.param('page');

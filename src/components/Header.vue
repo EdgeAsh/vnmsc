@@ -85,6 +85,9 @@ export default{
       nickName:''
 		};
 	},
+	mounted(){
+		this.checkLogin();
+	},
 	methods:{
 		login(){
 			if(!this.userName || !this.userPwd){
@@ -113,6 +116,14 @@ export default{
 					this.nickName = '';
 				}
 			})
+		},
+		checkLogin(){
+			axios.get('/users/chekLogin').then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					this.nickName = res.result;
+				}
+			});
 		}
 	},
 	components:{
