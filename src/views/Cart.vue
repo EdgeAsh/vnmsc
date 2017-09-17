@@ -153,7 +153,6 @@ import NavFooter from '@/components/Footer.vue'
 import NavBread from '@/components/Bread.vue'
 import Modal from '@/components/Modal.vue'
 
-import {currency} from'@/util/currency.js'
 import axios from 'axios'
 
 export default{
@@ -267,9 +266,6 @@ export default{
 			});
 			return i == this.cartList.length;
 		}
-	},
-	filters:{
-		moneyFormat:currency
 	},
 	mounted(){
 		this.init();
