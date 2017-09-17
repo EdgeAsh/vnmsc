@@ -93,7 +93,7 @@
 	            </div>
 	            <div class="cart-tab-5">
 	              <div class="cart-item-opration">
-	                <a href="javascript:;" class="item-edit-btn">
+	                <a href="javascript:;" class="item-edit-btn" @click='deleteProduct(item.productId)'>
 	                  <svg class="icon icon-del">
 	                    <use xlink:href="#icon-del"></use>
 	                  </svg>
@@ -109,9 +109,9 @@
 	        <div class="cart-foot-l">
 	          <div class="item-all-check">
 	            <a href="javascipt:;">
-	                  <span class="checkbox-btn item-check-btn">
-	                      <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
-	                  </span>
+                <span class="checkbox-btn item-check-btn">
+                    <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
+                </span>
 	              <span>Select all</span>
 	            </a>
 	          </div>
@@ -128,6 +128,13 @@
 	    </div>
 	  </div>
 	</div>
+	<modal :mdShow='deleConfirm' @close='closeModal'>
+		<p slot='message'>你确定要删除此条数据么？</p>
+		<div slot='btnGroup'>
+			<a href='javascript:;' class="btn btn--m" @click='confirm'>确定</a>
+			<a href='javascript:;' class="btn btn--m" @click='cancel'>取消</a>
+		</div>
+	</modal>
 	<nav-footer></nav-footer>
 </div>
 </template>
@@ -154,7 +161,9 @@ export default{
 	},
 	data(){
 		return{
-			cartList:[]
+			cartList:[],
+			deleConfirm:false,
+			productId:''
 		};
 	},
 	methods:{
@@ -165,6 +174,20 @@ export default{
 					this.cartList = res.result;
 				}
 			})
+		},
+		deleteProduct(productId){
+			this.deleConfirm = true;
+			this.productId = productId;
+		},
+		confirm(){
+			
+			this.closeModal();
+		},
+		cancel(){
+			this.closeModal();
+		},
+		closeModal(){
+			this.deleConfirm=false
 		}
 	},
 	components:{
