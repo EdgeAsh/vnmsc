@@ -81,9 +81,9 @@
 	              <div class="item-quantity">
 	                <div class="select-self select-self-open">
 	                  <div class="select-self-area">
-	                    <a class="input-sub">-</a>
-	                    <span class="select-ipt">10</span>
-	                    <a class="input-add">+</a>
+	                    <a class="input-sub" @click="editCart('decrease',item)">-</a>
+	                    <span class="select-ipt">{{item.productNum}}</span>
+	                    <a class="input-add" @click="editCart('increase',item)">+</a>
 	                  </div>
 	                </div>
 	              </div>
@@ -196,6 +196,26 @@ export default{
 		},
 		closeModal(){
 			this.deleConfirm=false
+		},
+		editCart(flag,item){
+			if(flag=='increase'){
+				item.productNum++;
+			}else if(flag=='decrease'){
+				if(item.productNum<=1){
+					return;
+				}
+				item.productNum--;
+			}
+
+			axios.post('/users/editCart',{
+				productNum:item.productNum,
+				productId:item.productId
+			}).then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					console.log('更改成功');
+				}
+			})
 		}
 	},
 	components:{

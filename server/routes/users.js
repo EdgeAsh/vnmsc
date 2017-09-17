@@ -121,4 +121,33 @@ router.post('/cartDelet',(req,res,next)=>{
 	});
 })
 
+// 更改用户购物车商品数量
+router.post('/editCart',(req,res,next)=>{
+	let userId = req.cookies.userId,
+			productId = req.body.productId,
+			productNum = req.body.productNum;
+
+	User.update({
+		// 查询条件
+		userId:userId,'cartList.productId':productId
+	},{
+		// 替换的内容
+		"cartList.$.productNum": productNum
+	},(err,doc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:'更改失败'
+			})
+		}else{
+			res.json({
+				status:'0',
+				msg:'更改成功',
+				result:doc
+			})
+		}
+	});
+})
+
 module.exports = router;
