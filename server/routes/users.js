@@ -81,7 +81,7 @@ router.get('/cartList',(req,res,next)=>{
 				status:'1',
 				msg:err.message,
 				result:''
-			})
+			});
 		}else{
 			res.json({
 				status:'0',

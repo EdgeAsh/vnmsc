@@ -68,14 +68,14 @@
 	                </a>
 	              </div>
 	              <div class="cart-item-pic">
-	                <img src="/static/1.jpg">
+	                <img :src="'/static/'+item.productImage">
 	              </div>
 	              <div class="cart-item-title">
-	                <div class="item-name">XX</div>
+	                <div class="item-name">{{item.productName}}</div>
 	              </div>
 	            </div>
 	            <div class="cart-tab-2">
-	              <div class="item-price">1000</div>
+	              <div class="item-price">{{item.salePrice}}</div>
 	            </div>
 	            <div class="cart-tab-3">
 	              <div class="item-quantity">
@@ -89,7 +89,7 @@
 	              </div>
 	            </div>
 	            <div class="cart-tab-4">
-	              <div class="item-price-total">100</div>
+	              <div class="item-price-total">{{item.salePrice * item.productNum}}</div>
 	            </div>
 	            <div class="cart-tab-5">
 	              <div class="cart-item-opration">
@@ -118,7 +118,7 @@
 	        </div>
 	        <div class="cart-foot-r">
 	          <div class="item-total">
-	            Item total: <span class="total-price">500</span>
+	            Item total: <span class="total-price">{{totalPrice}}</span>
 	          </div>
 	          <div class="btn-wrap">
 	            <a class="btn btn--red">Checkout</a>
@@ -154,11 +154,18 @@ export default{
 	},
 	data(){
 		return{
-
+			cartList:[]
 		};
 	},
 	methods:{
-
+		init(){
+			axios.get('/users/cartList').then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					this.cartList = res.result;
+				}
+			})
+		}
 	},
 	components:{
 		NavHeader,
@@ -167,7 +174,16 @@ export default{
 		Modal
 	},
 	computed:{
-
+		totalPrice(){
+			let totalP = 0;
+			this.cartList.forEach((item)=>{
+				totalP += item.salePrice*item.productNum;
+			})
+			return totalP;
+		}
+	},
+	mounted(){
+		this.init();
 	}
 }
 </script>
