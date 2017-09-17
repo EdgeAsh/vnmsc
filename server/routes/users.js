@@ -121,18 +121,20 @@ router.post('/cartDelet',(req,res,next)=>{
 	});
 })
 
-// 更改用户购物车商品数量
+// 更改用户购物车商品数量,是否选中
 router.post('/editCart',(req,res,next)=>{
 	let userId = req.cookies.userId,
 			productId = req.body.productId,
-			productNum = req.body.productNum;
+			productNum = req.body.productNum,
+			checked = req.body.checked;
 
 	User.update({
 		// 查询条件
 		userId:userId,'cartList.productId':productId
 	},{
 		// 替换的内容
-		"cartList.$.productNum": productNum
+		"cartList.$.productNum": productNum,
+		"cartList.$.checked": checked
 	},(err,doc)=>{
 		if(err){
 			res.json({
@@ -150,4 +152,40 @@ router.post('/editCart',(req,res,next)=>{
 	});
 })
 
+
+// 全选
+router.post('/cartSelectAll',(req,res,next)=>{
+	let userId = req.cookies.userId,
+			checkAll = req.body.checkAll?'1':'0';
+	// 针对MongoDB批量修改。找到用户，遍历cartList修改checked属性,然后保存；
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:'获取用户失败'
+			})
+		}else{
+			userDoc.cartList.forEach((item)=>{
+				item.checked = checkAll
+			});
+			// 保存
+			userDoc.save((err1,doc1)=>{
+				if(err1){
+					res.json({
+						status:'1',
+						msg:err1.message,
+						result:'保存失败'
+					})
+				}else{
+					res.json({
+						status:'0',
+						msg:'数据保存成功',
+						result:doc1
+					})
+				}
+			})
+		}
+	})
+});
 module.exports = router;

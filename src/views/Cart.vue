@@ -108,8 +108,8 @@
 	      <div class="cart-foot-inner">
 	        <div class="cart-foot-l">
 	          <div class="item-all-check">
-	            <a href="javascipt:;">
-                <span class="checkbox-btn item-check-btn">
+	            <a href="javascipt:;" @click='toggleSelectAll()'>
+                <span class="checkbox-btn item-check-btn" :class="{'check':isSelectAll}">
                     <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                 </span>
 	              <span>Select all</span>
@@ -163,7 +163,8 @@ export default{
 		return{
 			cartList:[],
 			deleConfirm:false,
-			productId:''
+			productId:'',
+			selectAllFlag: false
 		};
 	},
 	methods:{
@@ -205,17 +206,38 @@ export default{
 					return;
 				}
 				item.productNum--;
+			}else if(flag == 'checked'){
+				// item.checked属性取反
+				item.checked = item.checked=='1' ? '0': '1';
 			}
 
 			axios.post('/users/editCart',{
 				productNum:item.productNum,
-				productId:item.productId
+				productId:item.productId,
+				checked: item.checked
 			}).then((response)=>{
 				let res = response.data;
 				if(res.status == '0'){
 					console.log('更改成功');
 				}
 			})
+		},
+		toggleSelectAll(){
+			this.selectAllFlag = !this.selectAllFlag;
+
+			// 购物车所有条目标记checked标记为1
+			this.cartList.forEach((item)=>{
+				item.checked = this.selectAllFlag?'1':'0';
+			})
+
+			axios.post('users/cartSelectAll',{
+				checkAll: this.selectAllFlag
+			}).then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					console.log(res.msg);
+				}
+			});
 		}
 	},
 	components:{
@@ -228,9 +250,21 @@ export default{
 		totalPrice(){
 			let totalP = 0;
 			this.cartList.forEach((item)=>{
-				totalP += item.salePrice*item.productNum;
+				if(item.checked == '1'){
+					totalP += parseFloat(item.salePrice)*parseInt(item.productNum);
+				}
 			})
 			return totalP;
+		},
+		isSelectAll(){
+			// 判断是否全选
+			let i = 0;
+			this.cartList.forEach((item)=>{
+				if(item.checked == '1'){
+					i++;
+				}
+			});
+			return i == this.cartList.length;
 		}
 	},
 	mounted(){
