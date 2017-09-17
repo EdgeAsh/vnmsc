@@ -144,6 +144,9 @@ import './../assets/css/checkout.css'
 import NavHeader from '@/components/Header.vue'
 import NavFooter from '@/components/Footer.vue'
 import NavBread from '@/components/Bread.vue'
+import Modal from '@/components/Modal.vue'
+
+import axios from 'axios'
 
 export default{
 	props:{
@@ -160,7 +163,8 @@ export default{
 	components:{
 		NavHeader,
 		NavFooter,
-		NavBread
+		NavBread,
+		Modal
 	},
 	computed:{
 

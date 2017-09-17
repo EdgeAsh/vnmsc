@@ -71,4 +71,26 @@ router.get('/chekLogin',(req,res,next)=>{
 		});
 	}
 })
+
+// 查询当前用户购物车数据
+router.get('/cartList',(req,res,next)=>{
+	let userId = req.cookies.userId;
+	User.findOne({'userId': userId},(err,doc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:''
+			})
+		}else{
+			res.json({
+				status:'0',
+				msg:'查询成功',
+				result:doc.cartList
+			});
+		}
+	})
+})
+
+
 module.exports = router;
