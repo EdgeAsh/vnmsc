@@ -93,7 +93,7 @@ router.get('/cartList',(req,res,next)=>{
 })
 
 // 删除当前用户购物车数据
-router.post('cart/delet',(req,res,next)=>{
+router.post('/cartDelet',(req,res,next)=>{
 	let userId = req.cookies.userId,productId = req.body.productId;
 	// 删除特定用户下carList(数组)中productId值为productId的物品
 	User.update({

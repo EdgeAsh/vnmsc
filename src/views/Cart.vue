@@ -180,8 +180,16 @@ export default{
 			this.productId = productId;
 		},
 		confirm(){
-			
-			this.closeModal();
+			// 删除
+			axios.post('/users/cartDelet',{
+				productId:this.productId
+			}).then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					this.init();
+					this.deleConfirm = false;
+				}
+			})
 		},
 		cancel(){
 			this.closeModal();
