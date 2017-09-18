@@ -121,7 +121,7 @@
 	            Item total: <span class="total-price">{{totalPrice | moneyFormat('￥')}}</span>
 	          </div>
 	          <div class="btn-wrap">
-	            <a class="btn btn--red">Checkout</a>
+	            <a class="btn btn--red" :class="{'btn--dis':totalPrice<=0}" @click='checkOut()'>Checkout</a>
 	          </div>
 	        </div>
 	      </div>
@@ -238,6 +238,16 @@ export default{
 					console.log(res.msg);
 				}
 			});
+		},
+		checkOut(){
+			if(this.totalPrice<=0){
+				return;
+			}else{
+				// 编程式路由
+				this.$router.push({
+					path:'/address'
+				})
+			}
 		}
 	},
 	components:{
