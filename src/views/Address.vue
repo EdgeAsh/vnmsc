@@ -58,7 +58,7 @@
 		      <div class="addr-list-wrap">
 		        <div class="addr-list">
 		          <ul>
-		            <li v-for='item in addressList'>
+		            <li v-for='(item,index) in addressListFilter' @click='checkItem(index)' :class="{'check': checkedIndex == index}">
 		              <dl>
 		                <dt>{{item.userName}}</dt>
 		                <dd class="address">{{item.streetName}}</dd>
@@ -70,7 +70,7 @@
 		                </a>
 		              </div>
 		              <div class="addr-opration addr-set-default">
-		                <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
+		                <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault"><i>Set default</i></a>
 		              </div>
 		              <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
 		            </li>
@@ -86,7 +86,7 @@
 		        </div>
 
 		        <div class="shipping-addr-more">
-		          <a class="addr-more-btn up-down-btn" href="javascript:;">
+		          <a class="addr-more-btn up-down-btn" href="javascript:;" @click="open" :class="{'open': limit>3}">
 		            more
 		            <i class="i-up-down">
 		              <i class="i-up-down-l"></i>
@@ -146,6 +146,8 @@ export default{
 	},
 	data(){
 		return{
+			limit:3,
+			checkedIndex:0,
 			addressList:[]
 		};
 	},
@@ -157,6 +159,16 @@ export default{
 					this.addressList = res.result;
 				}
 			})
+		},
+		open(){
+			if(this.limit>3){
+				this.limit = 3;
+			}else{
+				this.limit = this.addressList.length;
+			}
+		},
+		checkItem(index){
+			this.checkedIndex = index;
 		}
 	},
 	components:{
@@ -166,7 +178,9 @@ export default{
 		Modal
 	},
 	computed:{
-
+		addressListFilter(){
+			return this.addressList.slice(0,this.limit);
+		}
 	},
 	mounted(){
 		this.init();
