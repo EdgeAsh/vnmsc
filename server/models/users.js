@@ -16,7 +16,16 @@ var userSchema = new mongoose.Schema({
 			'checked':String
 		}
 	],
-	'addressList':Array
+	'addressList':[
+		{
+      "addressId" : String,
+      "userName" : String,
+      "streetName" : String,
+      "postCode" : String,
+      "tel" : String,
+      "isDefault" : Boolean
+    }
+	]
 });
 
 // 导出模板

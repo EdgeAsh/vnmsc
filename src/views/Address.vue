@@ -70,7 +70,7 @@
 		                </a>
 		              </div>
 		              <div class="addr-opration addr-set-default">
-		                <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault"><i>Set default</i></a>
+		                <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault" @click='setDefault(item.addressId)'><i>Set default</i></a>
 		              </div>
 		              <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
 		            </li>
@@ -169,6 +169,17 @@ export default{
 		},
 		checkItem(index){
 			this.checkedIndex = index;
+		},
+		setDefault(addressId){
+			// 设为默认地址,发送请求更改数据库
+			axios.post('users/setDefaultAdd',{
+				addressId:addressId
+			}).then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					this.init();
+				}
+			})
 		}
 	},
 	components:{

@@ -209,4 +209,48 @@ router.get('/addressList',(req,res,next)=>{
 	});
 })
 
+// 更改默认地址
+router.post('/setDefaultAdd',(req,res,next)=>{
+	let userId = req.cookies.userId,
+			addressId = req.body.addressId;
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:'用户不存在'
+			});
+		}else{
+			// res.json({
+			// 	status:'0',
+			// 	msg:'发现用户'
+			// 	result:userDoc
+			// });
+			userDoc.addressList.forEach((item)=>{
+				if(addressId == item.addressId){
+					item.isDefault = true;
+				}else{
+					item.isDefault = false;
+				}
+			});
+			// 保存
+			userDoc.save((err1,doc1)=>{
+				if(err1){
+					res.json({
+						status:'1003',
+						msg:err1.message,
+						result:'设置默认地址失败'
+					})
+				}else{
+					res.json({
+						status:'0',
+						msg:'设置默认地址成功',
+						result:doc1
+					})
+				}
+			})
+		}
+	});
+})
+
 module.exports = router;
