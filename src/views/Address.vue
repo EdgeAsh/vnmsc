@@ -58,7 +58,7 @@
 		      <div class="addr-list-wrap">
 		        <div class="addr-list">
 		          <ul>
-		            <li v-for='(item,index) in addressListFilter' @click='chooseItem(index)' :class="{'check': checkedIndex == index}">
+		            <li v-for='(item,index) in addressListFilter' @click='chooseItem(item.addressId,index)' :class="{'check': checkedIndex == index}">
 		              <dl>
 		                <dt>{{item.userName}}</dt>
 		                <dd class="address">{{item.streetName}}</dd>
@@ -117,7 +117,7 @@
 		        </div>
 		      </div>
 		      <div class="next-btn-wrap">
-		        <a class="btn btn--m btn--red">Next</a>
+		        <a href="javascript:;" class="btn btn--m btn--red" @click='headTo()'>Next</a>
 		      </div>
 		    </div>
 		  </div>
@@ -157,7 +157,8 @@ export default{
 			checkedIndex:0,
 			addressList:[],
 			mdShowFlag:false,
-			addressId:''
+			addressId:'',
+			selectedAddrId:''
 		};
 	},
 	methods:{
@@ -166,6 +167,13 @@ export default{
 				let res = response.data;
 				if(res.status == '0'){
 					this.addressList = res.result;
+					// 获取默认收货地址
+					this.addressList.forEach((item)=>{
+						if(item.isDefault){
+							this.selectedAddrId = item.addressId;
+						}
+						
+					});
 				}
 			})
 		},
@@ -176,8 +184,9 @@ export default{
 				this.limit = this.addressList.length;
 			}
 		},
-		chooseItem(index){
+		chooseItem(addrId,index){
 			this.checkedIndex = index;
+			this.selectedAddrId = addrId;
 		},
 		setDefault(addressId){
 			// 设为默认地址,发送请求更改数据库
@@ -208,6 +217,12 @@ export default{
 		},
 		closeModal(){
 			this.mdShowFlag = false;
+		},
+		headTo(){
+			if(!this.selectedAddrId){
+				return;
+			}
+			this.$router.push({path:'orderConfirm',query:{'addressId':this.selectedAddrId}});
 		}
 	},
 	components:{
