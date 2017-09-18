@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('./../models/users.js');
+require('./../utils/dateFormate.js') //时间格式化插件
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -289,4 +290,76 @@ router.post('/delteAddress',(req,res,next)=>{
 		}
 	});
 });
+
+// 用户订单,获取用户，购物车中已经购买的商品，地址信息。构成成交订单
+router.post('/payMent',(req,res,next)=>{
+	let userId = req.cookies.userId,
+			addressId = req.body.addressId,
+			totalPrice = req.body.totalPrice;
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:"用户订单获取用户失败"
+			})
+		}else{
+			let goodList = [],address='';
+			// 获取用户购买的商品
+			userDoc.cartList.forEach((item)=>{
+				if(item.checked=='1'){
+					goodList.push(item);
+				}
+			});
+			// 获取用户送货地址信息
+			userDoc.addressList.forEach((item)=>{
+				if(item.addressId == addressId){
+					address = item;
+				}
+			});
+
+			// 生成订单
+			let plantform = 'edge'
+			let r1 = Math.floor(Math.random()*10);
+			let r2 = Math.floor(Math.random()*10);
+			let sysDate = new Date().Format('yyyyMMddhhmmss');
+			let createdDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+			let orderId = plantform+r1+sysDate+r2
+
+			let order = {
+				orderId:orderId,
+				goodList:goodList,
+				orderTotal:totalPrice,
+				address:address,
+				orderStatus:'1',
+				createdDate:createdDate
+			}
+
+			// 保存订单至订单列表
+			userDoc.orderList.push(order);
+
+			// 插入数据库
+			userDoc.save((err,doc)=>{
+				if(err){
+					res.json({
+						status:'1',
+						msg:err.message,
+						result:"用户订单获插入数据库失败"
+					});
+				}else{
+					res.json({
+						status:'0',
+						msg:'用户订单获插入数据库成功',
+						// result:{
+						// 	orderFee:totalPrice,
+						// 	orderId:order.orderId
+						// }
+						result:order
+					});
+				}
+			});
+		}
+	});
+
+})
 module.exports = router;

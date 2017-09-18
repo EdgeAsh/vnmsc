@@ -117,10 +117,10 @@
 
       <div class="order-foot-wrap">
         <div class="prev-btn-wrap">
-          <button class="btn btn--m">Previous</button>
+          <router-link class="btn btn--m" to='/address'>Previous</router-link>
         </div>
         <div class="next-btn-wrap">
-          <button class="btn btn--m btn--red">Proceed to payment</button>
+          <button class="btn btn--m btn--red" @click='payMent()'>Proceed to payment</button>
         </div>
       </div>
     </div>
@@ -155,7 +155,8 @@ export default{
 			subtotal:0,
 			shipping:10,
 			discount:10,
-			tax:20
+			tax:20,
+			orderTotalPrice:0
 		};
 	},
 	methods:{
@@ -167,6 +168,25 @@ export default{
 					this.orderList = cartList.filter((item)=>{
 							return parseInt(item.checked) == 1;
 					});
+				}
+			});
+		},
+		payMent(){
+			// 获取收货地址id
+			let addressId = this.$route.query.addressId
+			axios.post('users/payMent',{
+				addressId:addressId,
+				totalPrice:this.orderTotalPrice
+			}).then((response)=>{
+				let res = response.data;
+				if(res.status=='0'){
+					// console.log(res.result);
+					this.$router.push({
+						path:'abc',
+						query:{
+							orderId:res.result.orderId
+						}
+					})
 				}
 			});
 		}
@@ -184,8 +204,8 @@ export default{
 				totalprice += parseFloat(item.salePrice)*parseInt(item.productNum);
 			});
 			this.subtotal = totalprice;
-
-			return (totalprice+parseInt(this.shipping)-parseInt(this.discount)+parseInt(this.tax)); 
+			this.orderTotalPrice = (totalprice+parseInt(this.shipping)-parseInt(this.discount)+parseInt(this.tax)); 
+			return this.orderTotalPrice; 
 		}
 	},
 	mounted(){
