@@ -213,6 +213,14 @@ router.get('/addressList',(req,res,next)=>{
 router.post('/setDefaultAdd',(req,res,next)=>{
 	let userId = req.cookies.userId,
 			addressId = req.body.addressId;
+
+	if(!addressId){
+		res.json({
+			status:'1003',
+			msg:'地址ID有问题',
+			result:''
+		})
+	}
 	User.findOne({userId:userId},(err,userDoc)=>{
 		if(err){
 			res.json({
@@ -237,7 +245,7 @@ router.post('/setDefaultAdd',(req,res,next)=>{
 			userDoc.save((err1,doc1)=>{
 				if(err1){
 					res.json({
-						status:'1003',
+						status:'1',
 						msg:err1.message,
 						result:'设置默认地址失败'
 					})
@@ -253,4 +261,32 @@ router.post('/setDefaultAdd',(req,res,next)=>{
 	});
 })
 
+
+// 删除地址
+router.post('/delteAddress',(req,res,next)=>{
+	let userId = req.cookies.userId, addressId = req.body.addressId;
+	User.update({
+		userId:userId
+	},{
+		$pull:{
+			'addressList':{
+				'addressId':addressId
+			}
+		}
+	},(err,doc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:'地址删除失败'
+			})
+		}else{
+			res.json({
+				status:'0',
+				msg:'',
+				result:'地址删除成功'
+			})
+		}
+	});
+});
 module.exports = router;

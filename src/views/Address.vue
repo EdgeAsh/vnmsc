@@ -58,14 +58,14 @@
 		      <div class="addr-list-wrap">
 		        <div class="addr-list">
 		          <ul>
-		            <li v-for='(item,index) in addressListFilter' @click='checkItem(index)' :class="{'check': checkedIndex == index}">
+		            <li v-for='(item,index) in addressListFilter' @click='chooseItem(index)' :class="{'check': checkedIndex == index}">
 		              <dl>
 		                <dt>{{item.userName}}</dt>
 		                <dd class="address">{{item.streetName}}</dd>
 		                <dd class="tel">{{item.tel}}</dd>
 		              </dl>
 		              <div class="addr-opration addr-del">
-		                <a href="javascript:;" class="addr-del-btn">
+		                <a href="javascript:;" class="addr-del-btn" @click='deletAdd(item.addressId)'>
 		                  <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
 		                </a>
 		              </div>
@@ -122,6 +122,13 @@
 		    </div>
 		  </div>
 		</div>
+		<modal :mdShow="mdShowFlag" @close='closeModal'>
+			<p slot='message'>你确定删除该地址么？</p>
+			<div slot='btnGroup'>
+				<a href='javascript:;' class="btn btn--m" @click='confirmDelet()'>确定</a>
+				<a href='javascript:;' class="btn btn--m" @click='mdShowFlag=false'>取消</a>
+			</div>
+		</modal>
 		<nav-footer></nav-footer>
 	</div>
 </template>
@@ -148,7 +155,9 @@ export default{
 		return{
 			limit:3,
 			checkedIndex:0,
-			addressList:[]
+			addressList:[],
+			mdShowFlag:false,
+			addressId:''
 		};
 	},
 	methods:{
@@ -167,7 +176,7 @@ export default{
 				this.limit = this.addressList.length;
 			}
 		},
-		checkItem(index){
+		chooseItem(index){
 			this.checkedIndex = index;
 		},
 		setDefault(addressId){
@@ -180,6 +189,25 @@ export default{
 					this.init();
 				}
 			})
+		},
+		deletAdd(addressId){
+			this.mdShowFlag = true;
+			this.addressId = addressId;
+		},
+		confirmDelet(){
+			// 确认删除地址
+			axios.post('users/delteAddress',{addressId:this.addressId}).then((response)=>{
+				let res = response.data;
+				if(res.status == '0'){
+					console.log('删除地址成功');
+					this.mdShowFlag = false;
+					this.init();
+					this.addressId = '';
+				}
+			})
+		},
+		closeModal(){
+			this.mdShowFlag = false;
 		}
 	},
 	components:{
