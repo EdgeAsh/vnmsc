@@ -182,7 +182,7 @@ export default{
 				if(res.status=='0'){
 					// console.log(res.result);
 					this.$router.push({
-						path:'abc',
+						path:'orderSuccess',
 						query:{
 							orderId:res.result.orderId
 						}

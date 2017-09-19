@@ -309,6 +309,8 @@ router.post('/payMent',(req,res,next)=>{
 			userDoc.cartList.forEach((item)=>{
 				if(item.checked=='1'){
 					goodList.push(item);
+					item.checked = '0'
+					// 应该将已经购买的商品从购物车中删除  TODO
 				}
 			});
 			// 获取用户送货地址信息
@@ -362,4 +364,50 @@ router.post('/payMent',(req,res,next)=>{
 	});
 
 })
+
+// 根据订单ID查询订单信息
+router.get('/orderDetail',(req,res,next)=>{
+	let userId = req.cookies.userId,orderId=req.param('orderId');
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:'没有此用户',
+				result:''
+			});
+		}else{
+			// 查找订单
+			if(userDoc.orderList.length<=0){
+				res.json({
+					status:'12001',
+					msg:'此用户没有订单',
+					result:''
+				});
+			}
+			let order=null;
+			userDoc.orderList.forEach((item)=>{
+				if(item.orderId==orderId){
+					order = item;
+				}
+			});
+
+			if(!order && !order.orderTotal){
+				res.json({
+					status:'12002',
+					msg:'此用户没有该订单',
+					result:''
+				});
+			}else{
+				res.json({
+					status:'0',
+					msg:'获取到订单',
+					result:{
+						orderId:order.orderId,
+						orderTotal:order.orderTotal
+					}
+				});
+			}
+		}
+	});
+});
 module.exports = router;
