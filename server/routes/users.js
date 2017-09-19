@@ -148,8 +148,8 @@ router.post('/cartDelet',(req,res,next)=>{
 		}else{
 			res.json({
 				status:'0',
-				msg:'',
-				result:'删除成功'
+				msg:'删除成功',
+				result:doc
 			})
 		}
 	});

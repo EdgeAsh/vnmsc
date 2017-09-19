@@ -72,6 +72,8 @@ import './../assets/css/login.css'
 
 import axios from 'axios'
 
+import {mapState} from 'vuex'
+
 export default{
 	props:{
 
@@ -140,12 +142,14 @@ export default{
 
 	},
 	computed:{
-		nickName(){
-			return this.$store.state.nickName;
-		},
-		cartCount(){
-			return this.$store.state.cartCount;
-		}
+		// vuex提供的mapState返回一个对象，...为ES6语法解构。结果跟下方代码一致
+		...mapState(['nickName','cartCount'])
+		// nickName(){
+		// 	return this.$store.state.nickName;
+		// },
+		// cartCount(){
+		// 	return this.$store.state.cartCount;
+		// }
 	}
 }
 </script>

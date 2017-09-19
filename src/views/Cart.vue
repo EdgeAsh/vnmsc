@@ -93,7 +93,7 @@
 	            </div>
 	            <div class="cart-tab-5">
 	              <div class="cart-item-opration">
-	                <a href="javascript:;" class="item-edit-btn" @click='deleteProduct(item.productId)'>
+	                <a href="javascript:;" class="item-edit-btn" @click='deleteProduct(item)'>
 	                  <svg class="icon icon-del">
 	                    <use xlink:href="#icon-del"></use>
 	                  </svg>
@@ -164,6 +164,7 @@ export default{
 			cartList:[],
 			deleConfirm:false,
 			productId:'',
+			deleItem:{},
 			selectAllFlag: false
 		};
 	},
@@ -176,18 +177,19 @@ export default{
 				}
 			})
 		},
-		deleteProduct(productId){
+		deleteProduct(item){
 			this.deleConfirm = true;
-			this.productId = productId;
+			this.deleItem = item;
 		},
 		confirm(){
 			// 删除
 			axios.post('/users/cartDelet',{
-				productId:this.productId
+				productId:this.deleItem.productId
 			}).then((response)=>{
 				let res = response.data;
 				if(res.status == '0'){
 					this.init();
+					this.$store.commit('updateCartCount',-this.deleItem.productNum);
 					this.deleConfirm = false;
 				}
 			})
