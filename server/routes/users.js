@@ -73,6 +73,39 @@ router.get('/chekLogin',(req,res,next)=>{
 	}
 })
 
+// 获取购物车商品数量
+router.get('/getCartCount',(req,res,next)=>{
+	let userId = req.cookies.userId;
+	if(!req.cookies && !req.cookies.userId){
+		res.json({
+			status:'1',
+			msg:'无缓存 || 无用户ID',
+			result:''
+		});
+		return;
+	}
+	User.findOne({userId:userId},(err,userDoc)=>{
+		if(err){
+			res.json({
+				status:'1',
+				msg:err.message,
+				result:''
+			});
+		}else{
+			let count = 0;
+			userDoc.cartList.map(function(item){
+				count += parseInt(item.productNum)
+			});
+			// 返回数量
+			res.json({
+				status:'0',
+				msg:'获取购物车数量成功',
+				result:count
+			});
+		}
+	});
+});
+
 // 查询当前用户购物车数据
 router.get('/cartList',(req,res,next)=>{
 	let userId = req.cookies.userId;
