@@ -199,13 +199,16 @@ export default{
 			this.deleConfirm=false
 		},
 		editCart(flag,item){
+			let num = 0;
 			if(flag=='increase'){
 				item.productNum++;
+				num = 1;
 			}else if(flag=='decrease'){
 				if(item.productNum<=1){
 					return;
 				}
 				item.productNum--;
+				num = -1;
 			}else if(flag == 'checked'){
 				// item.checked属性取反
 				item.checked = item.checked=='1' ? '0': '1';
@@ -218,6 +221,7 @@ export default{
 			}).then((response)=>{
 				let res = response.data;
 				if(res.status == '0'){
+					this.$store.commit('updateCartCount',num);
 					console.log('更改成功');
 				}
 			})
