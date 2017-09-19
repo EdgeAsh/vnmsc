@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Vuex-Mutations</title>
+	<link rel="stylesheet" href="">
+	<script src='../../node_modules/vue/dist/vue.js'></script>
+	<script src='../../node_modules/vuex/dist/vuex.min.js'></script>
+</head>
+<body>
+	<div id="app">
+		<h1>{{msg}}</h1>
+		<counter></counter>
+		<button @click='add'>点击</button>
+	</div>
+<script>
+	const counter = {
+		template:`
+			<div>
+				<div>数量：{{countNum}}</div>
+				<div>名字：{{userName}}</div>
+			</div>
+		`,
+		computed:{
+			countNum(){
+				return this.$store.state.count;
+			},
+			userName(){
+				return this.$store.state.name;
+			}
+		}
+	};
+	const storeVuex = new Vuex.Store({
+		state:{
+			count:20,
+			name:'TypeScript'
+		},
+		mutations:{
+			increment(state,num){
+				state.count = num;
+			},
+			changeName(state,name){
+				state.name = name;
+			}
+		}
+	});
+	new Vue({
+		el:"#app",
+		store: storeVuex,
+		data:{
+			msg:'使用Vuex的mutations!提交'
+		},
+		components:{
+			counter
+		},
+		methods:{
+			add(){
+				// 提交
+				this.$store.commit('increment',100);
+				this.$store.commit('changeName','JavaScript');
+			}
+		}
+	});
+</script>
+</body>
+</html>
