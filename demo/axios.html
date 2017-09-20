@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>axios</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src='../node_modules/vue/dist/vue.js'></script>
+  <script src='../node_modules/vue-resource/dist/vue-resource.js'></script>
+  <script src='../node_modules/axios/dist/axios.js'></script>
+</head>
+<body>
+<div id="app" class="container">
+  <h1>axios演示</h1>
+  <a href="javascript:;" class="btn btn-primary" @click='func1()'>get请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click='func2()'>post请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click='func3()'>jsonp请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click='func4()'>http方式</a>
+  <div><p v-text='msg'></p></div>
+</div>
+<script>
+  new Vue({
+    el:"#app",
+    methods:{
+      func1(){
+        // get请求
+        axios.get('../package.json',{
+          params:{userId:183},
+          headers:{token:'edge axios'}
+        }).then((response)=>{
+          this.msg = response.data;
+        }).catch((err)=>{console.log('err:'+err)});
+      },
+      func2(){
+        // post请求
+        axios.post('../package.json',{userId:193},{headers:{token:'edge axios post'}}).then((res)=>{
+          this.msg = res.data;
+        }).catch((err)=>{console.log('err:'+err)});
+      },
+      func3(){
+        // jsonp请求
+      },
+      func4(){
+        // 配置请求
+        axios({
+          url:"../package.json",
+          data:{userId:203},
+          params:{userId:204},
+          headers:{token:'edge axios http'},
+          method:'get'
+        }).then((res)=>{this.msg = res.data;}).catch((err)=>{console.log('err:'+err)});
+      }
+    },
+    data:{
+      msg:''
+    },
+    mounted(){
+      //全局拦截
+      axios.interceptors.request.use((request)=>{
+        console.log('拦截请求:',request);
+        return request;
+      });
+      axios.interceptors.response.use((response)=>{
+        console.log('拦截响应:',response);
+        return response;
+      });
+    }
+  });
+</script>
+</body>
+</html>

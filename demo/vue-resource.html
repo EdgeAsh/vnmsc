@@ -49,6 +49,7 @@
 				msg:''
 			},
       mounted(){
+			  // 全局拦截
 			  Vue.http.interceptors.push((request,next)=>{
 			    console.log(`request:`,request);
 			    next((response)=>{
