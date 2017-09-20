@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>vue-resource</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src='../node_modules/vue/dist/vue.js'></script>
+	<script src='../node_modules/vue-resource/dist/vue-resource.js'></script>
+</head>
+<body>
+	<h1>vue-resource演示</h1>
+	<div id="app" class="container">
+		<a href="javascript:;" class="btn btn-primary" @click='func1()'>get请求</a>
+		<a href="javascript:;" class="btn btn-primary" @click='func2()'>post请求</a>
+		<a href="javascript:;" class="btn btn-primary" @click='func3()'>jsonp请求</a>
+		<div><p v-text='msg'></p></div>
+	</div>
+	<script>
+		new Vue({
+			el:"#app",
+      http:{
+        root:'http://localhost:63342/vnmsc'
+      },
+			methods:{
+				func1(){
+				  // get请求
+					this.$http.get('package.json',{
+						params:{
+							userId:102
+						},
+						headers:{
+              token:'edge'
+						}
+					}).then((res)=>{this.msg = res.data},(err)=>{this.msg = err});
+				},
+				func2(){
+				  // post请求
+				  this.$http.post('package.json',{userId:103},{headers:{token:'post'}}).then((res)=>{
+//				    console.log(res);
+				    this.msg = res.data;
+          },(err)=>{this.msg = err})
+        },
+				func3(){
+				  // jsonp请求
+        },
+			},
+			data:{
+				msg:''
+			},
+      mounted(){
+			  Vue.http.interceptors.push((request,next)=>{
+			    console.log(`request:`,request);
+			    next((response)=>{
+			      console.log(`response:`,response);
+			      return response;
+          });
+        });
+      }
+		});
+	</script>
+</body>
+</html>
